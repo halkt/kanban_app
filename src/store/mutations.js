@@ -6,7 +6,7 @@ export default {
   },
 
   [types.FETCH_ALL_TASKLIST] (state, payload) {
-    throw new Error('FETCH_ALL_TASKLIST mutation should be implemented')
+    state.board.lists = payload
   },
 
   [types.ADD_TASK] (state, payload) {

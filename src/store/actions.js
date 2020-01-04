@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import * as types from './mutation-types'
-import { Auth, Lint, Task } from '../api'
+import { Auth, List, Task } from '../api'
 /* eslint-enable no-unused-vars */
 
 export default {
@@ -12,9 +12,12 @@ export default {
       .catch(err => { throw err })
   },
 
-  fetchLists: ({ commit }) => {
-    // TODO:
-    throw new Error('fetchLists action should be implemented')
+  fetchLists: ({ commit, state }) => {
+    return List.fetch(state.auth.token)
+      .then(({ lists }) => {
+        commit(types.FETCH_ALL_TASKLIST, lists)
+      })
+      .catch(err => { throw err })
   },
 
   addTask: ({ commit }) => {
