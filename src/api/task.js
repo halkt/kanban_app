@@ -9,5 +9,15 @@ export default {
           reject(new Error(err.response.data.message || err.message))
         })
     })
+  },
+
+  remove: (token, { id, listId }) => {
+    return new Promise((resolve, reject) => {
+      client.delete(`/tasks/${id}/remove`, { headers: { 'x-kbn-token': token } })
+        .then(() => resolve())
+        .catch(err => {
+          reject(new Error(err.response.data.message || err.message))
+        })
+    })
   }
 }

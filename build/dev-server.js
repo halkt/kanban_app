@@ -110,6 +110,25 @@ module.exports = app => {
       res.status(500).json({ message: '何らかの原因でタスクの追加に失敗しました。' })
     }
   })
+
+  // タスクを削除するヘルパー関数
+  function removeTask (board, id) {
+    board.lists.forEach(list => {
+      list.items = list.items.filter(item => item.id !== id)
+    })
+  }
+  
+  // タスク削除APIのエンドポイント`/task/:id/remove`
+  app.delete('/tasks/:id/remove', (req, res) => {
+    const token = req.headers['x-kbn-token']
+    if (!token) {
+      return res.status(403).json({ message: '許可されていません。' })
+    }
+    const id = parseInt(req.params.id)
+    removeTask(board, id)
+    res.sendStatus(204)
+  })
+
   // ログアウトAPIのエンドポイント`/auth/logout`
   app.delete('/auth/logout', (req, res) => {
     const token = req.headers['x-kbn-token']

@@ -25,7 +25,12 @@ export default {
   },
 
   [types.REMOVE_TASK] (state, payload) {
-    throw new Error('REMOVE_TASK mutation should be implemented')
+    const { id, listId } = payload
+    for (let i = 0; i < state.board.lists.length; i++) {
+      const list = state.board.lists[i]
+      if (list.id !== listId) { continue }
+      list.items = list.items.filter(item => item.id !== id)
+    }
   },
 
   [types.AUTH_LOGOUT] (state, payload) {

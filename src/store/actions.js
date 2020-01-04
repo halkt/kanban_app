@@ -34,9 +34,12 @@ export default {
     throw new Error('updateTask action should be implemented')
   },
 
-  removeTask: ({ commit }) => {
-    // TODO:
-    throw new Error('removeTask action should be implemented')
+  removeTask: ({ commit, state }, { id, listId }) => {
+    return Task.remove(state.auth.token, { id, listId })
+      .then(() => {
+        commit(types.REMOVE_TASK, { id, listId })
+      })
+      .catch(err => { throw err })
   },
 
   logout: ({ commit, state }) => {
