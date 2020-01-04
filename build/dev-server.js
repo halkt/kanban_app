@@ -77,9 +77,41 @@ module.exports = app => {
     res.json({ lists: board.lists })
   })
 
+  // タスクを追加するヘルパー関数
+  function addTask (board, name, listId) {
+    let task = null
+    for (let i = 0; i < board.lists.length; i++) {
+      const list = board.lists[i]
+      if (list.id === listId) {
+        task = {
+          id: generateTaskId(),
+          name,
+          description: '',
+          listId
+        }
+        list.items.push(task)
+        break
+      }
+    }
+    return task
+  }
+  // タスク追加APIのエンドポイント'/tasks/add'
+  app.post('/tasks/add', (req, res) => {
+    const token = req.headers['x-kbn-token']
+    if (!token) {
+      return res.status(403).json({ message: '許可されていません。' })
+    }
+    const { name } = req.body
+    const listId = parseInt(req.body.listId)
+    const task = addTask(board, name, listId)
+    if (task) {
+      res.status(201).json(task)
+    } else {
+      res.status(500).json({ message: '何らかの原因でタスクの追加に失敗しました。' })
+    }
+  })
   // ログアウトAPIのエンドポイント`/auth/logout`
   app.delete('/auth/logout', (req, res) => {
-    debugger
     const token = req.headers['x-kbn-token']
     if (!token) {
       return res.status(403).json({ message: '許可されていません。' })

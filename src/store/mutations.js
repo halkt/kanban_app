@@ -10,7 +10,14 @@ export default {
   },
 
   [types.ADD_TASK] (state, payload) {
-    throw new Error('ADD_TASK mutation should be implemented')
+    const task = payload
+    for (let i = 0; i < state.board.lists.length; i++) {
+      const list = state.board.lists[i]
+      if (list.id === task.listId) {
+        list.items.push(task)
+        break
+      }
+    }
   },
 
   [types.UPDATE_TASK] (state, payload) {
