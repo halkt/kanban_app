@@ -111,6 +111,42 @@ module.exports = app => {
     }
   })
 
+  // タスクを更新するヘルパー関数
+  function updateTask (board, id, name, description, listId) {
+    let ret = false
+    for (let i = 0; i < board.lists.length; i++) {
+      const list = board.lists[i]
+      if (list.id !== listId) { continue }
+      for (let j = 0; j < list.items.length; j++) {
+        const item = list.items[j]
+        if (item.id === id) {
+          item.name = name
+          item.description = description
+          ret = true
+          break
+        }
+      }
+    }
+    return ret
+  }
+
+  // タスク更新APIのエンドポイント'/tasks/:id/update'
+  app.put('/tasks/:id/update', (req, res) => {
+    const token = req.headers['x-kbn-token']
+    if (!token) {
+      return res.status(403).json({ message: '許可されていません。' })
+    }
+    const { name, description } = req.body
+    const id = parseInt(req.params.id)
+    const listId = parseInt(req.body.listId)
+    const ret = updateTask(board, id, name, description, listId)
+    if (ret) {
+      res.sendStatus(200)
+    } else {
+      res.status(500).json({ message: '何らかの原因でタスクの更新に失敗しました。' })
+    }
+  })
+  
   // タスクを削除するヘルパー関数
   function removeTask (board, id) {
     board.lists.forEach(list => {

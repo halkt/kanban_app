@@ -21,7 +21,19 @@ export default {
   },
 
   [types.UPDATE_TASK] (state, payload) {
-    throw new Error('UPDATE_TASK mutation should be implemented')
+    const task = payload
+    for (let i = 0; i < state.board.lists.length; i++) {
+      const list = state.board.lists[i]
+      if (list.id !== task.listId) { continue }
+      for (let j = 0; j < list.items.length; j++) {
+        const item = list.items[j]
+        if (item.id === task.id) {
+          item.name = task.name
+          item.description = task.description
+          break
+        }
+      }
+    }
   },
 
   [types.REMOVE_TASK] (state, payload) {

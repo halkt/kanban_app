@@ -29,9 +29,12 @@ export default {
       .catch(err => { throw err })
   },
 
-  updateTask: ({ commit }) => {
-    // TODO:
-    throw new Error('updateTask action should be implemented')
+  updateTask: ({ commit, state }, task) => {
+    return Task.update(state.auth.token, task)
+      .then(() => {
+        commit(types.UPDATE_TASK, task)
+      })
+      .catch(err => { throw err })
   },
 
   removeTask: ({ commit, state }, { id, listId }) => {
