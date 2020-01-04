@@ -76,4 +76,15 @@ module.exports = app => {
     }
     res.json({ lists: board.lists })
   })
+
+  // ログアウトAPIのエンドポイント`/auth/logout`
+  app.delete('/auth/logout', (req, res) => {
+    debugger
+    const token = req.headers['x-kbn-token']
+    if (!token) {
+      return res.status(403).json({ message: '許可されていません。' })
+    }
+    // NOTE: モックAPIサーバーなので、特にトークンの検証等は実装しない。
+    res.sendStatus(204)
+  })
 }

@@ -22,6 +22,6 @@ export default {
   },
 
   [types.AUTH_LOGOUT] (state, payload) {
-    throw new Error('AUTH_LOGOUT mutation should be implemented')
+    state.auth = payload
   }
 }

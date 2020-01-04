@@ -7,6 +7,7 @@ export default {
   login: ({ commit }, authInfo) => {
     return Auth.login(authInfo)
       .then(({ token, userId }) => {
+        localStorage.setItem('token', token)
         commit(types.AUTH_LOGIN, { token, userId })
       })
       .catch(err => { throw err })
@@ -35,8 +36,12 @@ export default {
     throw new Error('removeTask action should be implemented')
   },
 
-  logout: ({ commit }) => {
-    // TODO:
-    throw new Error('logout action should be implemented')
+  logout: ({ commit, state }) => {
+    return Auth.logout(state.auth.token)
+      .then(() => {
+        localStorage.removeItem('token')
+        commit(types.AUTH_LOGOUT, { token: null, userId: null })
+      })
+      .catch(err => { throw err })
   }
 }
