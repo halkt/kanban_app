@@ -47,5 +47,40 @@ export default {
 
   [types.AUTH_LOGOUT] (state, payload) {
     state.auth = payload
+  },
+
+  [types.MOVE_TASK_FROM] (state, payload) {
+    const { target, to } = payload
+    state.dragging.target = target
+    state.dragging.from = to
+  },
+
+  [types.MOVE_TO_TASK] (state, payload) {
+    const { target, to } = payload
+    state.dragging.target = target
+    state.dragging.to = to
+  },
+
+  [types.MOVE_TASK_DONE] (state, payload) {
+    const { target, from, to } = payload
+    const getTaskList = (lists, id) => lists.find(list => list.id === id)
+
+    // ドラッグ&ドロップ処理のための状態をリセット
+    state.dragging.target = null
+    state.dragging.from = null
+    state.dragging.to = null
+
+    // 移動元のタスクリストから対象タスクを取り出す
+    const fromTaskList = getTaskList(state.board.lists, from)
+    const index = fromTaskList.items.findIndex(item => item.id === target)
+    const task = fromTaskList.items[index]
+    fromTaskList.items.splice(index, 1)
+
+    // 移動先のタスクリストIDに変更
+    task.listId = to
+
+    // 移動先にタスクリストに対象タスクを格納
+    const toTaskList = getTaskList(state.board.lists, to)
+    toTaskList.items.push(task)
   }
 }

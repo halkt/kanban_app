@@ -14,6 +14,11 @@ const state = {
   },
   board: {
     lists: []
+  },
+  dragging: { // ドラッグ&ドロップされるタスクを処理するための状態を格納する
+    target: null, // ドラッグ&ドロップ対象のタスクID
+    from: null, // ドラッグ元のタスクリストID
+    to: null // ドロップ先のタスクリストID
   }
 }
 

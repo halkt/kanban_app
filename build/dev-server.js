@@ -146,7 +146,7 @@ module.exports = app => {
       res.status(500).json({ message: '何らかの原因でタスクの更新に失敗しました。' })
     }
   })
-  
+
   // タスクを削除するヘルパー関数
   function removeTask (board, id) {
     board.lists.forEach(list => {
@@ -164,6 +164,34 @@ module.exports = app => {
     removeTask(board, id)
     res.sendStatus(204)
   })
+
+  // タスク移動APIのエンドポイント`/task/:id/move`
+  app.post('/tasks/:id/move', (req, res) => {
+    const token = req.headers['x-kbn-token']
+    if (!token) {
+      return res.status(403).json({ message: '許可されていません。' })
+    }
+
+    const target = parseInt(req.params.id)
+    const from = parseInt(req.body.from)
+    const to = parseInt(req.body.to)
+
+    const fromTaskList = getTaskList(board, from)
+    const index = fromTaskList.items.findIndex(item => item.id === target)
+    const task = fromTaskList.items[index]
+    fromTaskList.items.splice(index, 1)
+
+    task.listId = to
+
+    const toTaskList = getTaskList(board, to)
+    toTaskList.items.push(task)
+
+    res.sendStatus(200)
+  })
+
+  function getTaskList (board, id) {
+    return board.lists.find(list => list.id === id)
+  }
 
   // ログアウトAPIのエンドポイント`/auth/logout`
   app.delete('/auth/logout', (req, res) => {
